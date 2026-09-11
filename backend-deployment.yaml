@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: backend
+  namespace: development
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: backend
+          image: davidlekkzy/shopeasy-backend:latest
+
+          envFrom:
+            - configMapRef:
+                name: shopeasy-config
+
+            - secretRef:
+                name: shopeasy-secrets
+
