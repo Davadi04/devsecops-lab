@@ -105,7 +105,8 @@ jobs:
       - name: Build image (local only - not pushed yet)
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./backend
+          file: ./backend/Dockerfile
           push: false
           load: true
           tags: |
@@ -131,7 +132,8 @@ jobs:
       - name: Push image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./backend
+          file: ./backend/Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
