@@ -7,6 +7,16 @@ FROM node:20-slim
 # drops that unused surface, which is what was driving the 805-finding
 # Trivy result down to a normal handful.
 
+# The base image snapshot predates a handful of Debian security patches
+# (libcap2, libgnutls30, libpcre2-8-0) that already have fixed versions
+# upstream - `apt-get upgrade` at build time pulls those in instead of
+# waiting on the next Docker Hub base image refresh. Cleaning apt's cache
+# afterward keeps this layer from bloating the image.
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # node:20 ships an older bundled npm whose vendored node-tar has several
