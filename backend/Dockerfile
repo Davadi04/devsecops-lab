@@ -1,4 +1,11 @@
-FROM node:20
+FROM node:20-slim
+# Switched from `node:20` (full Debian) to `node:20-slim`: the full image
+# ships hundreds of OS packages this app never uses (ImageMagick, Kerberos,
+# full kernel headers/tools, etc.), each one a potential source of
+# HIGH/CRITICAL CVEs from Debian's own patch cycle. slim keeps the same
+# Debian base and glibc (so pg/redis native bits behave identically) but
+# drops that unused surface, which is what was driving the 805-finding
+# Trivy result down to a normal handful.
 
 WORKDIR /app
 
