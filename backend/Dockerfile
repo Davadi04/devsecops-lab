@@ -7,8 +7,13 @@ WORKDIR /app
 # -31802, -59874, -73566). These live at
 # /usr/local/lib/node_modules/npm/node_modules/tar - not in this project's
 # own dependencies - so `npm audit fix` in the app has no effect on them.
-# Upgrading npm itself replaces its bundled tar with a patched copy.
-RUN npm install -g npm@latest
+# Upgrading npm replaces its bundled tar with a patched copy.
+#
+# Pinned (not @latest): npm 12.x now requires Node >=22, which this base
+# image doesn't have. npm 11.x still supports Node 20 (^20.17.0 || >=22.9.0)
+# and 11.19.1+ bundles a tar release that clears the CVE list above.
+# Bump this pin, don't drop it, whenever a newer 11.x closes a future CVE.
+RUN npm install -g npm@11.19.1
 
 COPY package*.json ./
 RUN npm install
