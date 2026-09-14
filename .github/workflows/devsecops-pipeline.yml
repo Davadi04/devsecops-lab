@@ -5,8 +5,6 @@ on:
     branches:
       - '**'
 
-  workflow_dispatch: {}
-
 # Least-privilege default token perms for the whole workflow.
 # Individual jobs do not need write access to the repo.
 permissions:
@@ -23,9 +21,10 @@ jobs:
 
   # ---------------------------------------------------------------------
   # 1. Static analysis - SonarQube (runs on every push, every branch)
+  #    Backend and frontend each have their own project key + token.
   # ---------------------------------------------------------------------
-  sonarqube:
-    name: SonarQube Scan
+  sonarqube-backend:
+    name: SonarQube Scan (Backend)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,10 +32,35 @@ jobs:
         with:
           fetch-depth: 0 # SonarQube needs full history for blame/new-code analysis
 
-      - name: SonarQube Scan
+      - name: SonarQube Scan - Backend
         uses: sonarsource/sonarqube-scan-action@v4
+        with:
+          args: >
+            -Dsonar.projectKey=shopeasy-backend
+            -Dsonar.projectName=ShopEasy Backend
+            -Dsonar.sources=backend
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACKEND }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  sonarqube-frontend:
+    name: SonarQube Scan (Frontend)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan - Frontend
+        uses: sonarsource/sonarqube-scan-action@v4
+        with:
+          args: >
+            -Dsonar.projectKey=shopeasy-frontend
+            -Dsonar.projectName=ShopEasy Frontend
+            -Dsonar.sources=frontend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   # ---------------------------------------------------------------------
@@ -45,7 +69,7 @@ jobs:
   trivy-fs-scan:
     name: Trivy Filesystem Scan
     runs-on: ubuntu-latest
-    needs: sonarqube
+    needs: [sonarqube-backend, sonarqube-frontend]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
