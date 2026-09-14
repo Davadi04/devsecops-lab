@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'
+  workflow_dispatch: {}
 
 # Least-privilege default token perms for the whole workflow.
 # Individual jobs do not need write access to the repo.
