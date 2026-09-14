@@ -36,8 +36,8 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@v4
         with:
           args: >
-            -Dsonar.projectKey=shopeasy-backend
-            -Dsonar.projectName=ShopEasy Backend
+            -Dsonar.projectKey=ShopEasy-Backend
+            -Dsonar.projectName="ShopEasy Backend"
             -Dsonar.sources=backend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACKEND }}
@@ -56,8 +56,8 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@v4
         with:
           args: >
-            -Dsonar.projectKey=shopeasy-frontend
-            -Dsonar.projectName=ShopEasy Frontend
+            -Dsonar.projectKey=ShopEasy-Frontend
+            -Dsonar.projectName="ShopEasy Frontend"
             -Dsonar.sources=frontend
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
